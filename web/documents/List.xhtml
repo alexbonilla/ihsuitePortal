@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Documentos"></h:outputText>
+        </ui:define>
+        <ui:define name="body">            
+            <h:form id="DocumentsListForm" >
+                <p:panelGrid columns="2">
+                    <p:panel id="DocumentsSearch" header="Rango de Fecha">
+                        <p:calendar id="datesince" value="#{documentsController.startDate}" mode="popup" placeholder="Desde"/>
+                        <p:calendar id="dateuntil" value="#{documentsController.endDate}" mode="popup" placeholder="Hasta"/>
+                        <p:commandButton value="buscar" actionListener="#{documentsController.getItemsByDateRange}" ajax="true" update="DocumentsListForm"/>
+                    </p:panel>
+                    <p:panel id="DocumentsList" header="Documentos">
+                        <h:outputText id="pendingDownloadDocs" value="Tiene #{documentsController.countNotDownloadedByCustomer} documento(s) por "/>
+                        <p:commandButton value="descargar"  actionListener="#{documentsController.getNotDownloadedDocuments}" ajax="false" update="pendingDownloadDocs" disabled="#{documentsController.countNotDownloadedByCustomer==0}"/>
+                        <p:dataTable id="datalist" value="#{documentsController.items}" var="item"
+                                     selectionMode="single" selection="#{documentsController.selected}"
+                                     paginator="true"
+                                     rowKey="#{item.documentid}"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Emisión"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datecreated}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>  
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Tipo"/>
+                                </f:facet>
+                                <h:outputText rendered="#{item.doctypecode=='01'}" value="Factura"/>                            
+                                <h:outputText rendered="#{item.doctypecode=='02'}" value="Retención"/>                            
+                                <h:outputText rendered="#{item.doctypecode=='03'}" value="NC"/>                            
+                                <h:outputText rendered="#{item.doctypecode=='04'}" value="ND"/>                            
+                                <h:outputText rendered="#{item.doctypecode=='05'}" value="Guía de Remisión"/>                            
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Número"/>
+                                </f:facet>
+                                <h:outputText value="#{item.docnum}"/>
+                            </p:column> 
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Visualizar"/>
+                                </f:facet>
+                                <h:outputLink value="http://dev.iveloper.com:20004/ihsuite/PDFDocumentCtrl">
+                                <!--<h:outputLink value="http://172.16.15.13/ihsuite/PDFDocumentCtrl">-->
+                                    <f:param name="documentid" value="#{item.documentid}" />
+                                    <f:param name="entityid" value="#{loginBean.entityid}" />
+                                    <h:graphicImage library="img" name="link-ride.png" />
+                                </h:outputLink>
+                            </p:column> 
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descargar"/>
+                                </f:facet>
+                                <p:commandLink value="descargar"  actionListener="#{documentsController.getDocumentXML}" ajax="false" update="pendingDownloadDocs" >
+                                    <f:param name="documentid" value="#{item.documentid}" />
+                                </p:commandLink>                                
+                            </p:column> 
+                            <f:facet name="footer">
+
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </p:panelGrid>
+            </h:form>            
+        </ui:define>
+    </ui:composition>
+</html>

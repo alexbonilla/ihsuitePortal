@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="LotsEditDlg" widgetVar="LotsEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditLotsTitle}">
+            <h:form id="LotsEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{lotsController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditLotsLabel_lotid}" for="lotid" />
+                        <p:inputText id="lotid" value="#{lotsController.selected.lotid}" title="#{bundle.EditLotsTitle_lotid}" required="true" requiredMessage="#{bundle.EditLotsRequiredMessage_lotid}"/>
+                        <p:outputLabel value="#{bundle.EditLotsLabel_datecreated}" for="datecreated" />
+                        <p:calendar id="datecreated" pattern="MM/dd/yyyy HH:mm:ss" value="#{lotsController.selected.datecreated}" title="#{bundle.EditLotsTitle_datecreated}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditLotsLabel_lotnumber}" for="lotnumber" />
+                        <p:inputText id="lotnumber" value="#{lotsController.selected.lotnumber}" title="#{bundle.EditLotsTitle_lotnumber}" />
+                        <p:outputLabel value="#{bundle.EditLotsLabel_lotopen}" for="lotopen" />
+                        <p:selectBooleanCheckbox id="lotopen" value="#{lotsController.selected.lotopen}" />
+                        <p:outputLabel value="#{bundle.EditLotsLabel_lottype}" for="lottype" />
+                        <p:inputText id="lottype" value="#{lotsController.selected.lottype}" title="#{bundle.EditLotsTitle_lottype}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{lotsController.update}" value="#{bundle.Save}" update="display,:LotsListForm:datalist,:growl" oncomplete="handleSubmit(args, 'LotsEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="LotsEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocinfoViewDlg" widgetVar="DocinfoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewDocinfoTitle}">
+            <h:form id="DocinfoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{docinfoController.selected != null}">
+                        <h:outputText value="#{bundle.ViewDocinfoLabel_documentid}"/>
+                        <h:outputText value="#{docinfoController.selected.documentid}" title="#{bundle.ViewDocinfoTitle_documentid}"/>
+                        <h:outputText value="#{bundle.ViewDocinfoLabel_customerid}"/>
+                        <h:outputText value="#{docinfoController.selected.customerid}" title="#{bundle.ViewDocinfoTitle_customerid}"/>
+                        <h:outputText value="#{bundle.ViewDocinfoLabel_timesdownloaded}"/>
+                        <h:outputText value="#{docinfoController.selected.timesdownloaded}" title="#{bundle.ViewDocinfoTitle_timesdownloaded}"/>
+                        <h:outputText value="#{bundle.ViewDocinfoLabel_lastdownload}"/>
+                        <h:outputText value="#{docinfoController.selected.lastdownload}" title="#{bundle.ViewDocinfoTitle_lastdownload}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewDocinfoLabel_documents}"/>
+                        <h:outputText value="#{docinfoController.selected.documents}" title="#{bundle.ViewDocinfoTitle_documents}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="DocinfoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

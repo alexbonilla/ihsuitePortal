@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AccountsCreateDlg" widgetVar="AccountsCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateAccountsTitle}">
+            <h:form id="AccountsCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{accountsController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_user}" for="user" />
+                        <p:inputText id="user" value="#{accountsController.selected.user}" title="#{bundle.CreateAccountsTitle_user}" required="true" requiredMessage="#{bundle.CreateAccountsRequiredMessage_user}"/>
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_active}" for="active" />
+                        <p:inputText id="active" value="#{accountsController.selected.active}" title="#{bundle.CreateAccountsTitle_active}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_datecreated}" for="datecreated" />
+                        <p:calendar id="datecreated" pattern="MM/dd/yyyy HH:mm:ss" value="#{accountsController.selected.datecreated}" title="#{bundle.EditAccountsTitle_datecreated}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_entityid}" for="entityid" />
+                        <p:inputText id="entityid" value="#{accountsController.selected.entityid}" title="#{bundle.CreateAccountsTitle_entityid}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_lastlogin}" for="lastlogin" />
+                        <p:calendar id="lastlogin" pattern="MM/dd/yyyy HH:mm:ss" value="#{accountsController.selected.lastlogin}" title="#{bundle.EditAccountsTitle_lastlogin}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_mail}" for="mail" />
+                        <p:inputText id="mail" value="#{accountsController.selected.mail}" title="#{bundle.CreateAccountsTitle_mail}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_online}" for="online" />
+                        <p:inputText id="online" value="#{accountsController.selected.online}" title="#{bundle.CreateAccountsTitle_online}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_pwd}" for="pwd" />
+                        <p:inputTextarea rows="4" cols="30" id="pwd" value="#{accountsController.selected.pwd}" title="#{bundle.CreateAccountsTitle_pwd}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_roles}" for="roles" />
+                        <p:inputText id="roles" value="#{accountsController.selected.roles}" title="#{bundle.CreateAccountsTitle_roles}" />
+                        <p:outputLabel value="#{bundle.CreateAccountsLabel_salt}" for="salt" />
+                        <p:inputTextarea rows="4" cols="30" id="salt" value="#{accountsController.selected.salt}" title="#{bundle.CreateAccountsTitle_salt}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{accountsController.create}" value="#{bundle.Save}" update="display,:AccountsListForm:datalist,:growl" oncomplete="handleSubmit(args,'AccountsCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="AccountsCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

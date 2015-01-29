@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ProfilesCreateDlg" widgetVar="ProfilesCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.CreateProfilesTitle}">
+            <h:form id="ProfilesCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{profilesController.selected != null}">
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{profilesController.selected.id}" title="#{bundle.CreateProfilesTitle_id}" required="true" requiredMessage="#{bundle.CreateProfilesRequiredMessage_id}"/>
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{profilesController.selected.name}" title="#{bundle.CreateProfilesTitle_name}" required="true" requiredMessage="#{bundle.CreateProfilesRequiredMessage_name}"/>
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_address}" for="address" />
+                        <p:inputText id="address" value="#{profilesController.selected.address}" title="#{bundle.CreateProfilesTitle_address}" />
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{profilesController.selected.email}" title="#{bundle.CreateProfilesTitle_email}" />
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_mobile}" for="mobile" />
+                        <p:inputText id="mobile" value="#{profilesController.selected.mobile}" title="#{bundle.CreateProfilesTitle_mobile}" />
+                        <p:outputLabel value="#{bundle.CreateProfilesLabel_phone}" for="phone" />
+                        <p:inputText id="phone" value="#{profilesController.selected.phone}" title="#{bundle.CreateProfilesTitle_phone}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{profilesController.create}" value="#{bundle.Save}" update="display,:ProfilesListForm:datalist,:growl" oncomplete="handleSubmit(args,'ProfilesCreateDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="ProfilesCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

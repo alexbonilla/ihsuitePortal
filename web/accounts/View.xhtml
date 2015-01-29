@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AccountsViewDlg" widgetVar="AccountsViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewAccountsTitle}">
+            <h:form id="AccountsViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{accountsController.selected != null}">
+                        <h:outputText value="#{bundle.ViewAccountsLabel_user}"/>
+                        <h:outputText value="#{accountsController.selected.user}" title="#{bundle.ViewAccountsTitle_user}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_active}"/>
+                        <h:outputText value="#{accountsController.selected.active}" title="#{bundle.ViewAccountsTitle_active}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_datecreated}"/>
+                        <h:outputText value="#{accountsController.selected.datecreated}" title="#{bundle.ViewAccountsTitle_datecreated}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_entityid}"/>
+                        <h:outputText value="#{accountsController.selected.entityid}" title="#{bundle.ViewAccountsTitle_entityid}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_lastlogin}"/>
+                        <h:outputText value="#{accountsController.selected.lastlogin}" title="#{bundle.ViewAccountsTitle_lastlogin}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_mail}"/>
+                        <h:outputText value="#{accountsController.selected.mail}" title="#{bundle.ViewAccountsTitle_mail}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_online}"/>
+                        <h:outputText value="#{accountsController.selected.online}" title="#{bundle.ViewAccountsTitle_online}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_pwd}"/>
+                        <h:outputText value="#{accountsController.selected.pwd}" title="#{bundle.ViewAccountsTitle_pwd}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_roles}"/>
+                        <h:outputText value="#{accountsController.selected.roles}" title="#{bundle.ViewAccountsTitle_roles}"/>
+                        <h:outputText value="#{bundle.ViewAccountsLabel_salt}"/>
+                        <h:outputText value="#{accountsController.selected.salt}" title="#{bundle.ViewAccountsTitle_salt}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="AccountsViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DocumentsEditDlg" widgetVar="DocumentsEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditDocumentsTitle}">
+            <h:form id="DocumentsEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{documentsController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_documentid}" for="documentid" />
+                        <p:inputText id="documentid" value="#{documentsController.selected.documentid}" title="#{bundle.EditDocumentsTitle_documentid}" required="true" requiredMessage="#{bundle.EditDocumentsRequiredMessage_documentid}"/>
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_datecreated}" for="datecreated" />
+                        <p:calendar id="datecreated" pattern="MM/dd/yyyy HH:mm:ss" value="#{documentsController.selected.datecreated}" title="#{bundle.EditDocumentsTitle_datecreated}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docapprefcode}" for="docapprefcode" />
+                        <p:inputText id="docapprefcode" value="#{documentsController.selected.docapprefcode}" title="#{bundle.EditDocumentsTitle_docapprefcode}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docautorizacion}" for="docautorizacion" />
+                        <p:inputText id="docautorizacion" value="#{documentsController.selected.docautorizacion}" title="#{bundle.EditDocumentsTitle_docautorizacion}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docautorizaciondate}" for="docautorizaciondate" />
+                        <p:calendar id="docautorizaciondate" pattern="MM/dd/yyyy HH:mm:ss" value="#{documentsController.selected.docautorizaciondate}" title="#{bundle.EditDocumentsTitle_docautorizaciondate}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docnum}" for="docnum" />
+                        <p:inputText id="docnum" value="#{documentsController.selected.docnum}" title="#{bundle.EditDocumentsTitle_docnum}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docref}" for="docref" />
+                        <p:inputTextarea rows="4" cols="30" id="docref" value="#{documentsController.selected.docref}" title="#{bundle.EditDocumentsTitle_docref}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docstatus}" for="docstatus" />
+                        <p:inputText id="docstatus" value="#{documentsController.selected.docstatus}" title="#{bundle.EditDocumentsTitle_docstatus}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_doctypecode}" for="doctypecode" />
+                        <p:inputText id="doctypecode" value="#{documentsController.selected.doctypecode}" title="#{bundle.EditDocumentsTitle_doctypecode}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_document}" for="document" />
+                        <p:inputTextarea rows="4" cols="30" id="document" value="#{documentsController.selected.document}" title="#{bundle.EditDocumentsTitle_document}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_notifyemail}" for="notifyemail" />
+                        <p:inputText id="notifyemail" value="#{documentsController.selected.notifyemail}" title="#{bundle.EditDocumentsTitle_notifyemail}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_notifyname}" for="notifyname" />
+                        <p:inputText id="notifyname" value="#{documentsController.selected.notifyname}" title="#{bundle.EditDocumentsTitle_notifyname}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_reference}" for="reference" />
+                        <p:inputTextarea rows="4" cols="30" id="reference" value="#{documentsController.selected.reference}" title="#{bundle.EditDocumentsTitle_reference}" />
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_statuschanged}" for="statuschanged" />
+                        <p:calendar id="statuschanged" pattern="MM/dd/yyyy HH:mm:ss" value="#{documentsController.selected.statuschanged}" title="#{bundle.EditDocumentsTitle_statuschanged}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_lotid}" for="lotid" />
+                        <p:selectOneMenu id="lotid" value="#{documentsController.selected.lotid}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{lotsController.itemsAvailableSelectOne}"
+                                           var="lotidItem"
+                                           itemValue="#{lotidItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundle.EditDocumentsLabel_docinfo}" for="docinfo" />
+                        <p:selectOneMenu id="docinfo" value="#{documentsController.selected.docinfo}" >
+                            <f:selectItem itemLabel="#{bundle.SelectOneMessage}"/>
+                            <f:selectItems value="#{docinfoController.itemsAvailableSelectOne}"
+                                           var="docinfoItem"
+                                           itemValue="#{docinfoItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{documentsController.update}" value="#{bundle.Save}" update="display,:DocumentsListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DocumentsEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="DocumentsEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

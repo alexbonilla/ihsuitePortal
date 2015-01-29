@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="Cambiar clave"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+
+            <h:form id="AccountsEditForm">
+                <p:panel header="Cambiar Clave" style="width: 260px; margin-left: auto; margin-right: auto">
+                    <h:panelGroup id="display">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true"/>
+                        <p:panelGrid id="matchGrid" columns="1" rendered="#{accountsController.selected != null}">                                                                                
+                            <p:password feedback="true" inline="true"  id="pwd1" value="#{accountsController.newpassword}" title="#{bundle.EditAccountsTitle_pwd}" placeholder="Nueva clave" required="true" match="pwd2"/>                        
+                            <p:password feedback="false" id="pwd2" value="#{accountsController.newpassword}" title="#{bundle.EditAccountsTitle_pwd}" placeholder="Confirmar clave" required="true"/>                                                    
+                        </p:panelGrid>
+                        <p:commandButton actionListener="#{accountsController.update}" update="matchGrid" value="Cambiar"/>                    
+                    </h:panelGroup>
+                </p:panel>
+            </h:form>
+
+        </ui:define>        
+    </ui:composition>
+</html>
