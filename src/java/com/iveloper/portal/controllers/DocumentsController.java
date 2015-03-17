@@ -1,11 +1,14 @@
 package com.iveloper.portal.controllers;
 
-import com.iveloper.portal.entities.Documents;
+
+import com.iveloper.ihsuite.services.entities.Document;
+import com.iveloper.ihsuite.services.jpa.DocumentJpaController;
+import com.iveloper.ihsuite.services.security.LoginBeanUtils;
 import com.iveloper.portal.jsf.util.JsfUtil;
 import com.iveloper.portal.jsf.util.JsfUtil.PersistAction;
-import com.iveloper.portal.beans.DocumentsFacade;
-import com.iveloper.portal.entities.Docinfo;
-import com.iveloper.portal.security.LoginBeanUtils;
+import com.iveloper.portal.beans.DocumentFacade;
+
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -42,11 +45,10 @@ import javax.transaction.UserTransaction;
 public class DocumentsController implements Serializable {
 
     @EJB
-    private com.iveloper.portal.beans.DocumentsFacade ejbFacade;
-    private List<Documents> items = null;
-    private Documents selected;
-    private DocumentsJpaController documentsJpaController;
-    private DocinfoJpaController docinfoJpaController;
+    private com.iveloper.portal.beans.DocumentFacade ejbFacade;
+    private List<Document> items = null;
+    private Document selected;
+    private DocumentJpaController documentsJpaController;
     private String entityid;
     private String customerid;
     private int countNotDownloadedByCustomer;
@@ -62,8 +64,8 @@ public class DocumentsController implements Serializable {
                 EntityManagerFactory emf = Persistence.createEntityManagerFactory("ihsuite" + entityid + "PU");
                 Context c = new InitialContext();
                 UserTransaction utx = (UserTransaction) c.lookup("java:comp/UserTransaction");
-                documentsJpaController = new DocumentsJpaController(utx, emf);
-                docinfoJpaController = new DocinfoJpaController(utx, emf);
+                documentsJpaController = new DocumentJpaController(utx, emf);
+                
 
             } catch (NamingException ex) {
                 Logger.getLogger(DocumentsController.class.getName()).log(Level.SEVERE, null, ex);
@@ -77,7 +79,7 @@ public class DocumentsController implements Serializable {
         String documentid = request.getParameter("documentid");
         if (documentid != null) {
 
-            selected = documentsJpaController.findDocuments(documentid);
+            selected = documentsJpaController.findDocument(documentid);
 
             FacesContext fc = FacesContext.getCurrentInstance();
             ExternalContext ec = fc.getExternalContext();
@@ -89,17 +91,17 @@ public class DocumentsController implements Serializable {
 
                 try (ZipOutputStream zip = new ZipOutputStream(servletOutputStream)) {
 
-                    zip.putNextEntry(new ZipEntry(selected.getDocnum() + ".xml"));
+                    zip.putNextEntry(new ZipEntry(selected.getDocNum()+ ".xml"));
                     zip.write(selected.getDocument(), 0, selected.getDocument().length);
                     zip.closeEntry();
 
                     zip.flush();
                     zip.close();
                 }
-                Docinfo thisDocInfo = selected.getDocinfo();
-                thisDocInfo.setTimesdownloaded(thisDocInfo.getTimesdownloaded() + 1);
-                thisDocInfo.setLastdownload(new Date());
-                docinfoJpaController.edit(thisDocInfo);
+                
+                selected.setTimesDownloaded(selected.getTimesDownloaded()+ 1);
+                selected.setLastDownload(new Date());
+                documentsJpaController.edit(selected);
                 fc.responseComplete();
             } catch (SecurityException | IllegalStateException ex) {
                 Logger.getLogger(DocumentsController.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,8 +118,8 @@ public class DocumentsController implements Serializable {
 
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-        List<Documents> documents = documentsJpaController.findNotDownloadedDocumentsByCustomerId(customerid);
-        Iterator<Documents> documentsItr = documents.iterator();
+        List<Document> documents = documentsJpaController.findNotDownloadedDocumentsByCustomerId(customerid);
+        Iterator<Document> documentsItr = documents.iterator();
         ec.responseReset();
         ec.setResponseContentType("application/zip");
         ec.setResponseHeader("Content-Disposition", "attachment; filename=documentos.zip");
@@ -125,8 +127,8 @@ public class DocumentsController implements Serializable {
 
             try (ZipOutputStream zip = new ZipOutputStream(servletOutputStream)) {
                 while (documentsItr.hasNext()) {
-                    Documents currentDocument = documentsItr.next();
-                    zip.putNextEntry(new ZipEntry(currentDocument.getDocnum() + ".xml"));
+                    Document currentDocument = documentsItr.next();
+                    zip.putNextEntry(new ZipEntry(currentDocument.getDocNum() + ".xml"));
                     zip.write(currentDocument.getDocument(), 0, currentDocument.getDocument().length);
                     zip.closeEntry();
                 }
@@ -170,11 +172,11 @@ public class DocumentsController implements Serializable {
         this.endDate = endDate;
     }
 
-    public Documents getSelected() {
+    public Document getSelected() {
         return selected;
     }
 
-    public void setSelected(Documents selected) {
+    public void setSelected(Document selected) {
         this.selected = selected;
     }
 
@@ -184,12 +186,12 @@ public class DocumentsController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private DocumentsFacade getFacade() {
+    private DocumentFacade getFacade() {
         return ejbFacade;
     }
 
-    public Documents prepareCreate() {
-        selected = new Documents();
+    public Document prepareCreate() {
+        selected = new Document();
         initializeEmbeddableKey();
         return selected;
     }
@@ -213,19 +215,19 @@ public class DocumentsController implements Serializable {
         }
     }
 
-    public List<Documents> getItems() {
+    public List<Document> getItems() {
         if (items == null) {
             if (customerid != null) {
                 items = documentsJpaController.findDocumentsByCustomerId(customerid);
             } else {
-                items = documentsJpaController.findDocumentsEntities();
+                items = documentsJpaController.findDocumentEntities();
             }
 
         }
         return items;
     }
 
-    public List<Documents> getItemsByDateRange() {
+    public List<Document> getItemsByDateRange() {
 
         if (customerid != null && startDate != null && endDate != null) {
             Calendar c = Calendar.getInstance();
@@ -233,8 +235,8 @@ public class DocumentsController implements Serializable {
             c.add(Calendar.DATE, 1);            
             items = documentsJpaController.findByDateRangeByCustomerId(customerid, startDate, c.getTime());
             System.out.println("getItemsByDateRange Count: " + items.size());
-        } else {
-            items = documentsJpaController.findDocumentsEntities();
+        } else if (customerid != null ){
+            items = documentsJpaController.findDocumentsByCustomerId(customerid);
         }
 
         return items;
@@ -247,7 +249,7 @@ public class DocumentsController implements Serializable {
                 if (persistAction != PersistAction.DELETE) {
                     documentsJpaController.edit(selected);
                 } else {
-                    documentsJpaController.destroy(selected.getDocumentid());
+                    documentsJpaController.destroy(selected.getId());
                 }
                 JsfUtil.addSuccessMessage(successMessage);
             } catch (EJBException ex) {
@@ -268,15 +270,15 @@ public class DocumentsController implements Serializable {
         }
     }
 
-    public List<Documents> getItemsAvailableSelectMany() {
-        return documentsJpaController.findDocumentsEntities();
+    public List<Document> getItemsAvailableSelectMany() {
+        return documentsJpaController.findDocumentEntities();
     }
 
-    public List<Documents> getItemsAvailableSelectOne() {
-        return documentsJpaController.findDocumentsEntities();
+    public List<Document> getItemsAvailableSelectOne() {
+        return documentsJpaController.findDocumentEntities();
     }
 
-    @FacesConverter(forClass = Documents.class)
+    @FacesConverter(forClass = Document.class)
     public static class DocumentsControllerConverter implements Converter {
 
         @Override
@@ -306,11 +308,11 @@ public class DocumentsController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Documents) {
-                Documents o = (Documents) object;
-                return getStringKey(o.getDocumentid());
+            if (object instanceof Document) {
+                Document o = (Document) object;
+                return getStringKey(o.getId());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Documents.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Document.class.getName()});
                 return null;
             }
         }

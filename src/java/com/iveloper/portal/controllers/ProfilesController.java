@@ -1,10 +1,13 @@
 package com.iveloper.portal.controllers;
 
-import com.iveloper.portal.entities.Profiles;
+
+import com.iveloper.ihsuite.services.entities.Profile;
+import com.iveloper.ihsuite.services.jpa.ProfileJpaController;
+import com.iveloper.ihsuite.services.security.LoginBeanUtils;
 import com.iveloper.portal.controllers.util.JsfUtil;
 import com.iveloper.portal.controllers.util.JsfUtil.PersistAction;
-import com.iveloper.portal.beans.ProfilesFacade;
-import com.iveloper.portal.security.LoginBeanUtils;
+import com.iveloper.portal.beans.ProfileFacade;
+
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,9 +35,9 @@ import javax.transaction.UserTransaction;
 public class ProfilesController implements Serializable {
 
     @EJB
-    private com.iveloper.portal.beans.ProfilesFacade ejbFacade;
-    private List<Profiles> items = null;
-    private Profiles selected;
+    private com.iveloper.portal.beans.ProfileFacade ejbFacade;
+    private List<Profile> items = null;
+    private Profile selected;
 
     public ProfilesController() {
         try {
@@ -43,20 +46,20 @@ public class ProfilesController implements Serializable {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("ihAccountsPU");
             Context c = new InitialContext();
             UserTransaction utx = (UserTransaction) c.lookup("java:comp/UserTransaction");
-            ProfilesJpaController profilesController = new ProfilesJpaController(utx, emf);
+            ProfileJpaController profilesController = new ProfileJpaController(utx, emf);
 
-            selected = profilesController.findProfiles(customerid);
+            selected = profilesController.findProfile(customerid);
 
         } catch (NamingException ex) {
             Logger.getLogger(AccountsController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public Profiles getSelected() {
+    public Profile getSelected() {
         return selected;
     }
 
-    public void setSelected(Profiles selected) {
+    public void setSelected(Profile selected) {
         this.selected = selected;
     }
 
@@ -66,12 +69,12 @@ public class ProfilesController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private ProfilesFacade getFacade() {
+    private ProfileFacade getFacade() {
         return ejbFacade;
     }
 
-    public Profiles prepareCreate() {
-        selected = new Profiles();
+    public Profile prepareCreate() {
+        selected = new Profile();
         initializeEmbeddableKey();
         return selected;
     }
@@ -95,7 +98,7 @@ public class ProfilesController implements Serializable {
         }
     }
 
-    public List<Profiles> getItems() {
+    public List<Profile> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -130,15 +133,15 @@ public class ProfilesController implements Serializable {
         }
     }
 
-    public List<Profiles> getItemsAvailableSelectMany() {
+    public List<Profile> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Profiles> getItemsAvailableSelectOne() {
+    public List<Profile> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = Profiles.class)
+    @FacesConverter(forClass = Profile.class)
     public static class ProfilesControllerConverter implements Converter {
 
         @Override
@@ -168,11 +171,11 @@ public class ProfilesController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Profiles) {
-                Profiles o = (Profiles) object;
+            if (object instanceof Profile) {
+                Profile o = (Profile) object;
                 return getStringKey(o.getId());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Profiles.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Profile.class.getName()});
                 return null;
             }
         }

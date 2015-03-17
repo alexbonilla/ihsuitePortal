@@ -1,11 +1,10 @@
 package com.iveloper.portal.controllers;
 
+import com.iveloper.ihsuite.services.security.LoginBeanUtils;
 import com.iveloper.portal.beans.DocinfoFacade;
 import com.iveloper.portal.controllers.util.JsfUtil;
 import com.iveloper.portal.controllers.util.JsfUtil.PersistAction;
 import com.iveloper.portal.entities.Docinfo;
-import com.iveloper.portal.security.LoginBeanUtils;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;

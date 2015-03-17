@@ -24,7 +24,7 @@
                         <p:dataTable id="datalist" value="#{documentsController.items}" var="item"
                                      selectionMode="single" selection="#{documentsController.selected}"
                                      paginator="true"
-                                     rowKey="#{item.documentid}"
+                                     rowKey="#{item.id}"
                                      rows="10"
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
@@ -32,7 +32,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="Emisión"/>
                                 </f:facet>
-                                <h:outputText value="#{item.datecreated}">
+                                <h:outputText value="#{item.dateEntered}">
                                     <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                                 </h:outputText>
                             </p:column>  
@@ -40,25 +40,25 @@
                                 <f:facet name="header">
                                     <h:outputText value="Tipo"/>
                                 </f:facet>
-                                <h:outputText rendered="#{item.doctypecode=='01'}" value="Factura"/>                            
-                                <h:outputText rendered="#{item.doctypecode=='02'}" value="Retención"/>                            
-                                <h:outputText rendered="#{item.doctypecode=='03'}" value="NC"/>                            
-                                <h:outputText rendered="#{item.doctypecode=='04'}" value="ND"/>                            
-                                <h:outputText rendered="#{item.doctypecode=='05'}" value="Guía de Remisión"/>                            
+                                <h:outputText rendered="#{item.docTypeCode=='01'}" value="Factura"/>                            
+                                <h:outputText rendered="#{item.docTypeCode=='02'}" value="Retención"/>                            
+                                <h:outputText rendered="#{item.docTypeCode=='03'}" value="NC"/>                            
+                                <h:outputText rendered="#{item.docTypeCode=='04'}" value="ND"/>                            
+                                <h:outputText rendered="#{item.docTypeCode=='05'}" value="Guía de Remisión"/>                            
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Número"/>
                                 </f:facet>
-                                <h:outputText value="#{item.docnum}"/>
+                                <h:outputText value="#{item.docNum}"/>
                             </p:column> 
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Visualizar"/>
                                 </f:facet>
-                                <h:outputLink value="http://dev.iveloper.com:20004/ihsuite/PDFDocumentCtrl">
+                                <h:outputLink value="https://dev.rastreototal.com:20004/ihsuiteReports/PDFDocumentCtrl">
                                 <!--<h:outputLink value="http://172.16.15.13/ihsuite/PDFDocumentCtrl">-->
-                                    <f:param name="documentid" value="#{item.documentid}" />
+                                <f:param name="documentid" value="#{item.id}" />
                                     <f:param name="entityid" value="#{loginBean.entityid}" />
                                     <h:graphicImage library="img" name="link-ride.png" />
                                 </h:outputLink>
@@ -68,7 +68,7 @@
                                     <h:outputText value="Descargar"/>
                                 </f:facet>
                                 <p:commandLink value="descargar"  actionListener="#{documentsController.getDocumentXML}" ajax="false" update="pendingDownloadDocs" >
-                                    <f:param name="documentid" value="#{item.documentid}" />
+                                    <f:param name="documentid" value="#{item.id}" />
                                 </p:commandLink>                                
                             </p:column> 
                             <f:facet name="footer">

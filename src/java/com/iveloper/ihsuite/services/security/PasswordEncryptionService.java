@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iveloper.portal.security;
+package com.iveloper.ihsuite.services.security;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

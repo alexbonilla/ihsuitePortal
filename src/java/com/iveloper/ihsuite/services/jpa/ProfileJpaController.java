@@ -3,35 +3,34 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.iveloper.portal.controllers;
+package com.iveloper.ihsuite.services.jpa;
 
-import com.iveloper.ihsuite.services.security.PasswordEncryptionService;
-import com.iveloper.portal.controllers.exceptions.NonexistentEntityException;
-import com.iveloper.portal.controllers.exceptions.PreexistingEntityException;
-import com.iveloper.portal.controllers.exceptions.RollbackFailureException;
-import com.iveloper.portal.entities.Accounts;
-
+import com.iveloper.ihsuite.services.entities.Profile;
+import com.iveloper.ihsuite.services.jpa.exceptions.NonexistentEntityException;
+import com.iveloper.ihsuite.services.jpa.exceptions.PreexistingEntityException;
+import com.iveloper.ihsuite.services.jpa.exceptions.RollbackFailureException;
 import java.io.Serializable;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 /**
  *
  * @author alexbonilla
  */
-public class AccountsJpaController implements Serializable {
+public class ProfileJpaController implements Serializable {
 
-    public AccountsJpaController(UserTransaction utx, EntityManagerFactory emf) {
+    public ProfileJpaController(UserTransaction utx, EntityManagerFactory emf) {
         this.utx = utx;
         this.emf = emf;
     }
@@ -42,21 +41,22 @@ public class AccountsJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Accounts accounts) throws PreexistingEntityException, RollbackFailureException, Exception {
+    public void create(Profile profile) throws PreexistingEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
+            
             em = getEntityManager();
-            em.persist(accounts);
-            utx.commit();
+            em.getTransaction().begin();
+            em.persist(profile);
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
-            if (findAccounts(accounts.getUser()) != null) {
-                throw new PreexistingEntityException("Accounts " + accounts + " already exists.", ex);
+            if (findProfile(profile.getId()) != null) {
+                throw new PreexistingEntityException("Profile " + profile + " already exists.", ex);
             }
             throw ex;
         } finally {
@@ -66,27 +66,25 @@ public class AccountsJpaController implements Serializable {
         }
     }
 
-    public void edit(Accounts accounts) throws NonexistentEntityException, RollbackFailureException, Exception {
+    public void edit(Profile profile) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
             utx.begin();
             em = getEntityManager();
-//            em.getTransaction().begin();
-            accounts = em.merge(accounts);
-//            em.getTransaction().commit();
+            
+            profile = em.merge(profile);
             utx.commit();
-
-        } catch (SecurityException | IllegalStateException ex) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             try {
                 utx.rollback();
-            } catch (IllegalStateException | SecurityException re) {
+            } catch (IllegalStateException | SecurityException | SystemException re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = accounts.getUser();
-                if (findAccounts(id) == null) {
-                    throw new NonexistentEntityException("The accounts with id " + id + " no longer exists.");
+                String id = profile.getId();
+                if (findProfile(id) == null) {
+                    throw new NonexistentEntityException("The profile with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -102,19 +100,20 @@ public class AccountsJpaController implements Serializable {
         try {
             utx.begin();
             em = getEntityManager();
-            Accounts accounts;
+            
+            Profile profile;
             try {
-                accounts = em.getReference(Accounts.class, id);
-                accounts.getUser();
+                profile = em.getReference(Profile.class, id);
+                profile.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The accounts with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The profile with id " + id + " no longer exists.", enfe);
             }
-            em.remove(accounts);
+            em.remove(profile);
             utx.commit();
-        } catch (Exception ex) {
+        } catch (NotSupportedException | SystemException | NonexistentEntityException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SecurityException | IllegalStateException ex) {
             try {
                 utx.rollback();
-            } catch (Exception re) {
+            } catch (IllegalStateException | SecurityException | SystemException re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
             throw ex;
@@ -125,19 +124,19 @@ public class AccountsJpaController implements Serializable {
         }
     }
 
-    public List<Accounts> findAccountsEntities() {
-        return findAccountsEntities(true, -1, -1);
+    public List<Profile> findProfileEntities() {
+        return findProfileEntities(true, -1, -1);
     }
 
-    public List<Accounts> findAccountsEntities(int maxResults, int firstResult) {
-        return findAccountsEntities(false, maxResults, firstResult);
+    public List<Profile> findProfileEntities(int maxResults, int firstResult) {
+        return findProfileEntities(false, maxResults, firstResult);
     }
 
-    private List<Accounts> findAccountsEntities(boolean all, int maxResults, int firstResult) {
+    private List<Profile> findProfileEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Accounts.class));
+            cq.select(cq.from(Profile.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -149,34 +148,20 @@ public class AccountsJpaController implements Serializable {
         }
     }
 
-    public Accounts findAccounts(String id) {
+    public Profile findProfile(String id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Accounts.class, id);
+            return em.find(Profile.class, id);
         } finally {
             em.close();
         }
     }
 
-    public boolean validateCredentials(String user, String pwd) {
-        PasswordEncryptionService pes = new PasswordEncryptionService();
-        Accounts validatingAccount = findAccounts(user);
-        boolean validation = false;
-        if (validatingAccount != null) {
-            try {
-                validation = pes.authenticate(pwd, validatingAccount.getPwd(), validatingAccount.getSalt());
-            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                Logger.getLogger(AccountsJpaController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return validation;
-    }
-
-    public int getAccountsCount() {
+    public int getProfileCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Accounts> rt = cq.from(Accounts.class);
+            Root<Profile> rt = cq.from(Profile.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
@@ -184,5 +169,5 @@ public class AccountsJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

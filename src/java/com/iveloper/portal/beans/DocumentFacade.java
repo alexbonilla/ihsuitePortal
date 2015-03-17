@@ -5,7 +5,8 @@
  */
 package com.iveloper.portal.beans;
 
-import com.iveloper.portal.entities.Documents;
+
+import com.iveloper.ihsuite.services.entities.Document;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -17,7 +18,7 @@ import javax.persistence.Query;
  * @author alexbonilla
  */
 @Stateless
-public class DocumentsFacade extends AbstractFacade<Documents> {
+public class DocumentFacade extends AbstractFacade<Document> {
 
     @PersistenceContext(unitName = "ihsuitea44dbdbb4c0b43b4a0e8f48c33dced6bPU")
     private EntityManager em;
@@ -27,15 +28,15 @@ public class DocumentsFacade extends AbstractFacade<Documents> {
         return em;
     }
 
-    public DocumentsFacade() {
-        super(Documents.class);
+    public DocumentFacade() {
+        super(Document.class);
     }
 
-    public List<Documents> findByCustomerId(String customerid) {
+    public List<Document> findByCustomerId(String customerid) {
 
-        Query query = getEntityManager().createNamedQuery("Documents.findByCustomerid",Documents.class);
+        Query query = getEntityManager().createNamedQuery("Document.findByCustomerid",Document.class);
         query.setParameter("customerid", customerid);
-        List<Documents> list = query.getResultList();
+        List<Document> list = query.getResultList();
 
         return list;
     }

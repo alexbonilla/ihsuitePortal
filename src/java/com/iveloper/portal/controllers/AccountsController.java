@@ -1,11 +1,14 @@
 package com.iveloper.portal.controllers;
 
-import com.iveloper.portal.entities.Accounts;
+
+import com.iveloper.ihsuite.services.entities.Account;
+import com.iveloper.ihsuite.services.jpa.AccountJpaController;
+import com.iveloper.ihsuite.services.security.LoginBeanUtils;
+import com.iveloper.ihsuite.services.security.PasswordEncryptionService;
 import com.iveloper.portal.controllers.util.JsfUtil;
 import com.iveloper.portal.controllers.util.JsfUtil.PersistAction;
-import com.iveloper.portal.beans.AccountsFacade;
-import com.iveloper.portal.security.LoginBeanUtils;
-import com.iveloper.portal.security.PasswordEncryptionService;
+import com.iveloper.portal.beans.AccountFacade;
+
 
 import java.io.Serializable;
 import java.util.List;
@@ -33,9 +36,9 @@ import javax.transaction.UserTransaction;
 public class AccountsController implements Serializable {
 
     @EJB
-    private com.iveloper.portal.beans.AccountsFacade ejbFacade;
-    private List<Accounts> items = null;
-    private Accounts selected;
+    private com.iveloper.portal.beans.AccountFacade ejbFacade;
+    private List<Account> items = null;
+    private Account selected;
     private String newpassword;
 
     public AccountsController() {
@@ -45,20 +48,20 @@ public class AccountsController implements Serializable {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory("ihAccountsPU");
             Context c = new InitialContext();
             UserTransaction utx = (UserTransaction) c.lookup("java:comp/UserTransaction");
-            AccountsJpaController accountController = new AccountsJpaController(utx, emf);
+            AccountJpaController accountController = new AccountJpaController(utx, emf);
 
-            selected = accountController.findAccounts(customerid);
+            selected = accountController.findAccount(customerid);
 
         } catch (NamingException ex) {
             Logger.getLogger(AccountsController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public Accounts getSelected() {
+    public Account getSelected() {
         return selected;
     }
 
-    public void setSelected(Accounts selected) {
+    public void setSelected(Account selected) {
         this.selected = selected;
     }
 
@@ -76,12 +79,12 @@ public class AccountsController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    private AccountsFacade getFacade() {
+    private AccountFacade getFacade() {
         return ejbFacade;
     }
 
-    public Accounts prepareCreate() {
-        selected = new Accounts();
+    public Account prepareCreate() {
+        selected = new Account();
         initializeEmbeddableKey();
         return selected;
     }
@@ -105,7 +108,7 @@ public class AccountsController implements Serializable {
         }
     }
 
-    public List<Accounts> getItems() {
+    public List<Account> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -143,15 +146,15 @@ public class AccountsController implements Serializable {
         }
     }
 
-    public List<Accounts> getItemsAvailableSelectMany() {
+    public List<Account> getItemsAvailableSelectMany() {
         return getFacade().findAll();
     }
 
-    public List<Accounts> getItemsAvailableSelectOne() {
+    public List<Account> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
 
-    @FacesConverter(forClass = Accounts.class)
+    @FacesConverter(forClass = Account.class)
     public static class AccountsControllerConverter implements Converter {
 
         @Override
@@ -181,11 +184,11 @@ public class AccountsController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Accounts) {
-                Accounts o = (Accounts) object;
+            if (object instanceof Account) {
+                Account o = (Account) object;
                 return getStringKey(o.getUser());
             } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Accounts.class.getName()});
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Account.class.getName()});
                 return null;
             }
         }

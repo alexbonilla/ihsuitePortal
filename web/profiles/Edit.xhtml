@@ -18,17 +18,17 @@
                         <p:messages id="messages" showDetail="true" autoUpdate="true"/>
                         <p:panelGrid id="accountEditGrid" columns="2" rendered="#{profilesController.selected != null}">
                             <p:outputLabel value="RUC/CI" for="id" />
-                            <p:inputText id="id" value="#{profilesController.selected.id}" title="#{bundle.EditProfilesTitle_id}" required="true" requiredMessage="#{bundle.EditProfilesRequiredMessage_id}" disabled="true"/>
+                            <p:inputText id="id" value="#{profilesController.selected.id}" title="RUC/CI" required="true" requiredMessage="campo requerido" disabled="true"/>
                             <p:outputLabel value="Razón Social" for="name" />
-                            <p:inputText id="name" value="#{profilesController.selected.name}" title="#{bundle.EditProfilesTitle_name}" required="true" requiredMessage="#{bundle.EditProfilesRequiredMessage_name}" disabled="true"/>
+                            <p:inputText id="name" value="#{profilesController.selected.name}" title="nombre" required="true" requiredMessage="campo requerido" disabled="true"/>
                             <p:outputLabel value="Dirección" for="address" />
-                            <p:inputText id="address" value="#{profilesController.selected.address}" title="#{bundle.EditProfilesTitle_address}" />
+                            <p:inputText id="address" value="#{profilesController.selected.address}" title="dirección" />
                             <p:outputLabel value="Email" for="email" />
-                            <p:inputText id="email" value="#{profilesController.selected.email}" title="#{bundle.EditProfilesTitle_email}" />
+                            <p:inputText id="email" value="#{profilesController.selected.email}" title="email" />
                             <p:outputLabel value="Celular" for="mobile" />
-                            <p:inputText id="mobile" value="#{profilesController.selected.mobile}" title="#{bundle.EditProfilesTitle_mobile}" />
+                            <p:inputText id="mobile" value="#{profilesController.selected.mobile}" title="móvil" />
                             <p:outputLabel value="Teléfono" for="phone" />
-                            <p:inputText id="phone" value="#{profilesController.selected.phone}" title="#{bundle.EditProfilesTitle_phone}" />
+                            <p:inputText id="phone" value="#{profilesController.selected.phone}" title="teléfono" />
                         </p:panelGrid>
                         <p:commandButton actionListener="#{profilesController.update}" value="Actualizar" update="accountEditGrid"/>                    
                     </h:panelGroup>

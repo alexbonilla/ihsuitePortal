@@ -5,7 +5,7 @@
  */
 package com.iveloper.portal.beans;
 
-import com.iveloper.portal.entities.Profiles;
+import com.iveloper.ihsuite.services.entities.Account;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
  * @author alexbonilla
  */
 @Stateless
-public class ProfilesFacade extends AbstractFacade<Profiles> {
+public class AccountFacade extends AbstractFacade<Account> {
     @PersistenceContext(unitName = "ihAccountsPU")
     private EntityManager em;
 
@@ -24,8 +24,8 @@ public class ProfilesFacade extends AbstractFacade<Profiles> {
         return em;
     }
 
-    public ProfilesFacade() {
-        super(Profiles.class);
+    public AccountFacade() {
+        super(Account.class);
     }
     
 }
